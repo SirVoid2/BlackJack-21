@@ -8,7 +8,7 @@ window.currentUser = null;
 async function signUp(email, password) {
   const { user, error } = await supabase.auth.signUp({ email, password });
   if (!error && user) {
-    await fetch('https://YOUR-PROJECT.supabase.co/rest/v1/users', {
+    await fetch('https://hnhimobegnykeplmetmf.supabase.co/rest/v1/users', {
       method: 'POST',
       headers: {
         'apikey': supabaseKey,
@@ -37,7 +37,7 @@ async function signOut() {
 
 async function fetchCoins() {
   if (!window.currentUser) return 0;
-  const res = await fetch(`https://YOUR-PROJECT.supabase.co/rest/v1/users?id=eq.${window.currentUser.id}`, {
+  const res = await fetch(`https://hnhimobegnykeplmetmf.supabase.co/rest/v1/users?id=eq.${window.currentUser.id}`, {
     headers: {
       'apikey': supabaseKey,
       'Authorization': 'Bearer ' + supabaseKey,
@@ -50,7 +50,7 @@ async function fetchCoins() {
 
 async function updateCoins(newCoins) {
   if (!window.currentUser) return;
-  await fetch(`https://YOUR-PROJECT.supabase.co/rest/v1/users?id=eq.${window.currentUser.id}`, {
+  await fetch(`https://hnhimobegnykeplmetmf.supabase.co/rest/v1/users?id=eq.${window.currentUser.id}`, {
     method: 'PATCH',
     headers: {
       'apikey': supabaseKey,
