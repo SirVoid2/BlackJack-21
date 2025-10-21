@@ -135,8 +135,11 @@ function newGame() {
 }
 
 function resetGame() {
+	password = input("Enter admin password:");
+	if (password == "admin123") {
+		currentChipBalance = input("Enter the new chip balance:");
+	}
 	currentWager = 0;
-	currentChipBalance = 0;
 	updateVisibleChipBalances();
 	location.reload();
 }
