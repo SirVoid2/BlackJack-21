@@ -16,9 +16,7 @@ $.getJSON('users.json', function(data) {
   while (true) {
     username = prompt("Please enter your username:");
     if (username === null || username.trim() === "") {
-      // Canceled or blank: open new tab and stop
-      window.open("https://www.example.com", "_blank");
-      return; // exit script
+      alert("Username not found. Please try again.");
     }
     if (usersData[username]) {
       // Valid user
