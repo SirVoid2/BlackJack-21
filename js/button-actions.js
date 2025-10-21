@@ -135,7 +135,7 @@ function newGame() {
 }
 
 function resetGame() {
-	password = input("Enter admin password:");
+	input("Enter admin password:");
 	if (password == "admin123") {
 		currentChipBalance = input("Enter the new chip balance:");
 	}
