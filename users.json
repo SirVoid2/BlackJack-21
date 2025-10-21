@@ -1,0 +1,8 @@
+// Example user data
+var usersData = {
+  "defaultUser": {
+    "username": "defaultUser",
+    "coins": 500
+  }
+  // You can add more users here
+};

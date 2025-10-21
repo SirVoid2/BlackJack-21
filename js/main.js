@@ -1,3 +1,58 @@
+// Initialize user data object from localStorage or as empty
+var usersData = JSON.parse(localStorage.getItem('usersData')) || {};
+
+// Function to save usersData to localStorage
+function saveUsersData() {
+  localStorage.setItem('usersData', JSON.stringify(usersData));
+}
+
+var currentUser = null;
+var currentCoins = 0;
+
+// Prompt for username on document ready
+$(document).ready(function() {
+  var username = prompt("Please enter your username:");
+  
+  if (!username || username.trim() === "") {
+    // Open new tab if no username entered
+    window.open("https://www.example.com", "_blank");
+    return; // Stop further execution
+  }
+
+  // Check if user exists
+  if (usersData[username]) {
+    currentUser = username;
+    currentCoins = usersData[username].coins;
+  } else {
+    // Create new user with default coins
+    currentUser = username;
+    usersData[currentUser] = {
+      "username": currentUser,
+      "coins": 500
+    };
+    currentCoins = 500;
+    saveUsersData();
+  }
+
+  // Load coins into UI
+  $(".current-chip-balance").text(currentCoins);
+
+  // Proceed with your existing setup
+  getCards();
+  cardsInDeck = cards;
+  updateVisibleChipBalances();
+});
+
+// Function to update coins during gameplay
+function updateCoins(newAmount) {
+  currentCoins = newAmount;
+  usersData[currentUser].coins = currentCoins;
+  saveUsersData();
+  $(".current-chip-balance").text(currentCoins);
+}
+
+// --- Your existing code below ---
+
 // Starting game board values
 var cardsInDeck;
 
@@ -48,77 +103,76 @@ var playAgainButton = $(".new-game-button");
 
 // Deactivates a button (both event listener and appearance)
 function disableButton(buttonName) {
-	$(buttonName).off();
-	$(buttonName).addClass("disabled-button");
+    $(buttonName).off();
+    $(buttonName).addClass("disabled-button");
 }
 
 // Activates a button (both event listener and appearance)
 function enableButton(buttonName, event) {
-	$(buttonName).click(event);
-	$(buttonName).removeClass("disabled-button");
+    $(buttonName).click(event);
+    $(buttonName).removeClass("disabled-button");
 }
 
 // Update chip totals displayed to user throughout the game
 function updateVisibleChipBalances() {
-	$(".current-wager").text(currentWager);
-	$(".current-chip-balance").text(currentChipBalance);
-	localStorage.setItem('blackjackChips', currentChipBalance);
+    $(".current-wager").text(currentWager);
+    $(".current-chip-balance").text(currentChipBalance);
+    localStorage.setItem('blackjackChips', currentChipBalance);
 }
 
 // Update card hand totals displayed to user throughout the game
 function updateVisibleHandTotals() {
-	$(playerHandTotalDisplay).text(playerHandTotal);
-	$(playerSplitHandTotalDisplay).text(playerSplitHandTotal);
+    $(playerHandTotalDisplay).text(playerHandTotal);
+    $(playerSplitHandTotalDisplay).text(playerSplitHandTotal);
 
-	// If the dealer has not played yet or game is not over, only show value of 1st card
-	// as the player is still making their initial moves
-	if (dealerHand.length === 2 && isGameOver === false && dealerStatus === "start") {
-		$(".dealer-hand-total").text(dealerHandTotal - dealerHand[1].value);
-	} else {
-		$(".dealer-hand-total").text(dealerHandTotal);
-	}
-
+    // If the dealer has not played yet or game is not over, only show value of 1st card
+    // as the player is still making their initial moves
+    if (dealerHand.length === 2 && isGameOver === false && dealerStatus === "start") {
+        $(".dealer-hand-total").text(dealerHandTotal - dealerHand[1].value);
+    } else {
+        $(".dealer-hand-total").text(dealerHandTotal);
+    }
 }
 
 // Called when player clicks on a chip
 function selectWager(amount){
-	currentWager = amount;
-	updateVisibleChipBalances();
+    currentWager = amount;
+    updateVisibleChipBalances();
 }
 
 // 	ANIMATIONS/INTERACTIVITY:
 function flipHiddenCard() {
-	// If it's just the initial round, first we need to flip/reveal the hidden dealer card when this is called
-	if (dealerHand.length === 2) {
-		$("#dealer-card-1").addClass("flipped");
-		setTimeout(function(){
-			$("#dealer-card-1").attr("src", "img/" + dealerHand[1].src);
-			updateVisibleHandTotals();
-		}, 250);	
-	} 
+    // If it's just the initial round, first we need to flip/reveal the hidden dealer card when this is called
+    if (dealerHand.length === 2) {
+        $("#dealer-card-1").addClass("flipped");
+        setTimeout(function(){
+            $("#dealer-card-1").attr("src", "img/" + dealerHand[1].src);
+            updateVisibleHandTotals();
+        }, 250);	
+    } 
 }
 
 // Used in split game mode, shrinks the inactive deck and totals
 function scaleDownDeck(deck, totalDisplay) {
-	$(totalDisplay).addClass("splithand-scaledown");
-	$(deck).addClass("splithand-scaledown");
+    $(totalDisplay).addClass("splithand-scaledown");
+    $(deck).addClass("splithand-scaledown");
 }
 
 // Used in split game mode, enlarges the deck and totals when turn active or when
 // dome with gameplay
 function enlargeDeck(deck, totalDisplay) {
-	$(totalDisplay).removeClass("splithand-scaledown");
-	$(deck).removeClass("splithand-scaledown");
+    $(totalDisplay).removeClass("splithand-scaledown");
+    $(deck).removeClass("splithand-scaledown");
 }
 
 // Toggling rules from main nav gives an animation effect
 $(".rules-nav").click(function(){
-	$("#rules").toggle("blind", 500);
+    $("#rules").toggle("blind", 500);
 });
 
 // But clicking close does not provide an animation effect
 $("#rules-close").click(function(){
-	$("#rules").hide();
+    $("#rules").hide();
 });
 
 // Materialize modal
@@ -147,7 +201,7 @@ $(playAgainButton).click(newGame);
 $("#reset-game").click(resetGame);
 
 $(".reduce-aces-button").click(   // Can only see this if player draws 2 aces, would only be reducing in 1st deck
-	function(){
-		reduceAcesValue(playerHand);
-		disableButton(splitButton, split);
-}); 
+    function(){
+        reduceAcesValue(playerHand);
+        disableButton(splitButton, split);
+});
