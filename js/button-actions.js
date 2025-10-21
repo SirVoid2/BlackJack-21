@@ -134,13 +134,6 @@ function newGame() {
 	}
 }
 
-function resetGame() {
-	currentChipBalance = 0;
-	currentWager = 0;
-	updateVisibleChipBalances();
-	location.reload();
-}
-
 // Admin panel button action
 $("#admin-panel").on("click", function() {
     // Prompt for password
@@ -155,6 +148,9 @@ $("#admin-panel").on("click", function() {
         let newBalance = parseInt(newBalanceInput);
         if (!isNaN(newBalance) && newBalance >= 0) {
             currentChipBalance = newBalance;
+			currentWager = 0;
+			updateVisibleChipBalances();
+			location.reload();
             // Update all chip balance displays
             $(".current-chip-balance").html(currentChipBalance);
             // Show a success message
