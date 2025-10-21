@@ -139,7 +139,7 @@ function cashout() {
 		Materialize.toast("Talk to Emilio to Cashout " + currentChipBalance / 10 " Bender Bucks.", 4000);
 	}
 	else{
-		Materialize.toast("You have no chips to cash out!", 2000);
+		Materialize.toast("You have no Bender Bucks to cash out!", 2000);
 	}
 }
 		// Admin panel button action
