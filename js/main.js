@@ -1,116 +1,168 @@
-// auth.js - Handles Supabase auth and user coin management
+// Starting game board values
+var cardsInDeck;
 
-const supabaseUrl = 'https://hnhimobegnykeplmetmf.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuaGltb2JlZ255a2VwbG1ldG1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MTIwMDAsImV4cCI6MjA3NjE4ODAwMH0.QFgGMnlkw0-Kn4uELrM9kPYZQFpUUkbmuHHL-2AK4d0';
-
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-let currentUser = null;
-
-// Initialize auth state
 $(document).ready(function() {
-  checkAuthState();
+  getCards();
+  cardsInDeck = cards;
+  updateVisibleChipBalances();
 
-  // Auth event handlers
-  $('#login-btn').click(handleLogin);
-  $('#register-btn').click(handleRegister);
-  $('#logout-btn').click(handleLogout);
+  // Initialize Materialize modal
+  M.Modal.init(document.querySelectorAll('.modal'));
+
+  // Setup event handlers
+  setupAuthState();
+  setupWagerHandlers();
+  setupGameHandlers();
+  setupRules();
+
+  // Additional initializations if needed
 });
 
-async function checkAuthState() {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (user) {
-    currentUser = user;
-    showUserInfo(user);
-    fetchUserCoins(user.id);
+// Your existing game logic:
+
+var currentTurn = "player";
+var currentWager = 0;
+var currentChipBalance = localStorage.getItem('blackjackChips') || 500;
+var gameWinner = "none"; // To be declared at end of game
+var isGameOver = false;
+
+// Dealer hand and starting totals
+var dealerHand = [];
+var dealerHandTotal = 0;
+var dealerGameBoard = $("#dealer");
+var dealerStatus = "start"; // Possible statuses: start, stand, hit
+
+// Player hand and starting totals
+var playerHand = [];
+var playerHandTotal = 0;
+var playerGameBoard = $("#user-hand");
+var playerHandTotalDisplay = $(".hand-total");
+var playerStatus = "start"; // Possible statuses: start, stand, hit
+
+// Because aces can be 1 or 11, need to know if player has aces
+var playerHasAce = false;  
+
+// Player split game variables
+var splitGame = false; // default false
+var playerSplitHand = [];
+var playerSplitHandTotal = 0;
+var playerSplitGameBoard = $("#user-split-hand");
+var playerSplitHandTotalDisplay = $(".split-hand-total");
+var playerSplitStatus;
+
+// Buttons from DOM
+var startButton = $("#start-game-button");
+var doubleDownButton = $("#double-down-button");
+var hitButton = $("#hit-button");
+var standButton = $("#stand-button");
+var splitButton = $(".split-button");
+var playAgainButton = $(".new-game-button"); 
+
+// Deactivates a button (event listener + appearance)
+function disableButton(buttonName) {
+  $(buttonName).off();
+  $(buttonName).addClass("disabled-button");
+}
+
+// Activates a button (event listener + appearance)
+function enableButton(buttonName, event) {
+  $(buttonName).click(event);
+  $(buttonName).removeClass("disabled-button");
+}
+
+// Update chip balances displayed
+function updateVisibleChipBalances() {
+  $(".current-wager").text(currentWager);
+  $(".current-chip-balance").text(currentChipBalance);
+  localStorage.setItem('blackjackChips', currentChipBalance);
+}
+
+// Update hand totals displayed
+function updateVisibleHandTotals() {
+  $(playerHandTotalDisplay).text(playerHandTotal);
+  $(playerSplitHandTotalDisplay).text(playerSplitHandTotal);
+
+  // Show only 1st dealer card value if game not over
+  if (dealerHand.length === 2 && isGameOver === false && dealerStatus === "start") {
+    $(".dealer-hand-total").text(dealerHandTotal - dealerHand[1].value);
   } else {
-    // Show login modal
-    M.Modal.getInstance(document.getElementById('auth-modal')).open();
+    $(".dealer-hand-total").text(dealerHandTotal);
   }
 }
 
-function handleLogin() {
-  const email = $('#auth-email').val();
-  const password = $('#auth-password').val();
-  supabase.auth.signIn({ email, password }).then(({ user, error }) => {
-    if (error) {
-      alert(error.message);
-    } else {
-      currentUser = user;
-      showUserInfo(user);
-      fetchUserCoins(user.id);
-      M.Modal.getInstance(document.getElementById('auth-modal')).close();
-    }
-  });
+// Called when player clicks on a wager chip
+function selectWager(amount){
+  currentWager = amount;
+  updateVisibleChipBalances();
 }
 
-function handleRegister() {
-  const email = $('#auth-email').val();
-  const password = $('#auth-password').val();
-  supabase.auth.signUp({ email, password }).then(async ({ user, error }) => {
-    if (error) {
-      alert(error.message);
-    } else {
-      // Add user to 'users' table with default coins
-      await addUserToDatabase(user.id, email);
-      currentUser = user;
-      showUserInfo(user);
-      fetchUserCoins(user.id);
-      M.Modal.getInstance(document.getElementById('auth-modal')).close();
-    }
-  });
+// Flip dealer's hidden card
+function flipHiddenCard() {
+  if (dealerHand.length === 2) {
+    $("#dealer-card-1").addClass("flipped");
+    setTimeout(function(){
+      $("#dealer-card-1").attr("src", "img/" + dealerHand[1].src);
+      updateVisibleHandTotals();
+    }, 250);	
+  } 
 }
 
-function handleLogout() {
-  supabase.auth.signOut().then(() => {
-    currentUser = null;
-    $('#user-info').hide();
-    M.Modal.getInstance(document.getElementById('auth-modal')).open();
-  });
+// In split mode, shrink inactive deck
+function scaleDownDeck(deck, totalDisplay) {
+  $(totalDisplay).addClass("splithand-scaledown");
+  $(deck).addClass("splithand-scaledown");
 }
 
-function showUserInfo(user) {
-  $('#user-email').text(user.email);
-  $('#user-info').show();
+// Enlarge deck in split mode
+function enlargeDeck(deck, totalDisplay) {
+  $(totalDisplay).removeClass("splithand-scaledown");
+  $(deck).removeClass("splithand-scaledown");
 }
 
-async function addUserToDatabase(userId, email) {
-  await fetch('https://hnhimobegnykeplmetmf.supabase.co/rest/v1/users', {
-    method: 'POST',
-    headers: {
-      'apikey': 'YOUR_API_KEY',
-      'Authorization': 'Bearer YOUR_API_KEY',
-      'Content-Type': 'application/json',
-      'Prefer': 'return=representation'
-    },
-    body: JSON.stringify({ id: userId, email: email, coins: 500 })
-  });
+// Toggle rules overlay
+$(".rules-nav").click(function(){
+  $("#rules").toggle("blind", 500);
+});
+
+$("#rules-close").click(function(){
+  $("#rules").hide();
+});
+
+// Initialize Materialize modal
+$(".modal").modal({ 
+  dismissible: false, 
+  opacity: .40, 
+  inDuration: 300, 
+  outDuration: 200, 
+  startingTop: "10%", 
+  endingTop: "10%", 
+});
+
+// Event listeners for wager chips
+$("#chip-10").click(function(){selectWager(10)});
+$("#chip-25").click(function(){selectWager(25)});
+$("#chip-50").click(function(){selectWager(50)});
+$("#chip-100").click(function(){selectWager(100)});
+
+// Button handlers
+$(startButton).click(startGame);
+$(doubleDownButton).click(doubleDown); 
+$(hitButton).click(hit);
+$(standButton).click(stand);
+$(playAgainButton).click(newGame);
+$("#reset-game").click(resetGame);
+
+$(".reduce-aces-button").click(function(){
+  reduceAcesValue(playerHand);
+  disableButton(splitButton);
+});
+
+// Setup game handlers (assuming these functions are defined elsewhere)
+function setupGameHandlers() {
+  // Implement your game event handlers or call existing functions here if needed
 }
 
-async function fetchUserCoins(userId) {
-  const response = await fetch(`https://hnhimobegnykeplmetmf.supabase.co/rest/v1/users?id=eq.${userId}`, {
-    headers: {
-      'apikey': 'YOUR_API_KEY',
-      'Authorization': 'Bearer YOUR_API_KEY'
-    }
-  });
-  const data = await response.json();
-  if (data.length > 0) {
-    $('.current-chip-balance').text(data[0].coins);
-  } else {
-    $('.current-chip-balance').text('0');
-  }
-}
-
-async function updateUserCoins(userId, newCoins) {
-  await fetch(`https://hnhimobegnykeplmetmf.supabase.co/rest/v1/users?id=eq.${userId}`, {
-    method: 'PATCH',
-    headers: {
-      'apikey': 'YOUR_API_KEY',
-      'Authorization': 'Bearer YOUR_API_KEY',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ coins: newCoins })
-  });
-  $('.current-chip-balance').text(newCoins);
+// Setup rules overlay
+function setupRules() {
+  // Already handled above
 }
