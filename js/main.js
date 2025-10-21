@@ -1,10 +1,14 @@
 // --- User Data and Initialization ---
-var usersData = {};
+
+// Load users data from localStorage or fetch from users.json
+var usersData = JSON.parse(localStorage.getItem('usersData')) || {};
+
+// Variables for current user
 var currentUser = null;
 var currentCoins = 0;
-var currentChipBalance = 500; // default fallback
+var currentChipBalance = 500; // fallback default
 
-// Load user data from users.json and initialize game
+// Load user data and prompt for username
 $.getJSON('users.json', function(data) {
   usersData = data;
 
@@ -12,9 +16,9 @@ $.getJSON('users.json', function(data) {
   while (true) {
     username = prompt("Please enter your username:");
     if (username === null || username.trim() === "") {
-      // If canceled or blank, open new tab
+      // Canceled or blank: open new tab and stop
       window.open("https://www.example.com", "_blank");
-      return; // Stop execution
+      return; // exit script
     }
     if (usersData[username]) {
       // Valid user
@@ -28,8 +32,11 @@ $.getJSON('users.json', function(data) {
   currentUser = username;
   currentCoins = usersData[currentUser].coins;
 
-  // Synchronize local chip amount with last user's coins
+  // Set local chip amount to last user's coins
   currentChipBalance = currentCoins;
+
+  // Save updated usersData to localStorage for persistence
+  localStorage.setItem('usersData', JSON.stringify(usersData));
 
   // Update UI
   $(".current-chip-balance").text(currentCoins);
@@ -40,7 +47,7 @@ $.getJSON('users.json', function(data) {
   updateVisibleChipBalances();
 });
 
-// Function to update coins during gameplay
+// Function to update coins during gameplay and save to localStorage
 function updateCoins(newAmount) {
   currentCoins = newAmount;
   usersData[currentUser].coins = currentCoins;
