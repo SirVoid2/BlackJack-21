@@ -24,14 +24,9 @@ $(document).ready(function() {
     currentUser = username;
     currentCoins = usersData[username].coins;
   } else {
-    // Create new user with default coins
-    currentUser = username;
-    usersData[currentUser] = {
-      "username": currentUser,
-      "coins": 500
-    };
-    currentCoins = 500;
-    saveUsersData();
+    // Open new tab if no username entered
+    window.open("https://www.example.com", "_blank");
+    return; // Stop further execution
   }
 
   // Load coins into UI
