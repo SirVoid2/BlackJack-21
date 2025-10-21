@@ -6,6 +6,7 @@ var usersData = JSON.parse(localStorage.getItem('usersData')) || {};
 // Variables for current user
 var currentUser = null;
 var currentCoins = 0;
+var currentChipBalance = 0; // fallback default
 
 // Load user data and prompt for username
 $.getJSON('users.json', function(data) {
