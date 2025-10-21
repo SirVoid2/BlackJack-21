@@ -1,8 +1,0 @@
-// Example user data
-var usersData = {
-  "admin": {
-    "username": "admin",
-    "coins": 500
-  }
-  // You can add more users here
-};
