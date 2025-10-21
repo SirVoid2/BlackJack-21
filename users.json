@@ -1,5 +1,0 @@
-{
-  "alice": { "username": "alice", "coins": 1000 },
-  "bob": { "username": "bob", "coins": 500 },
-  "charlie": { "username": "charlie", "coins": 750 }
-}
