@@ -6,7 +6,6 @@ var usersData = JSON.parse(localStorage.getItem('usersData')) || {};
 // Variables for current user
 var currentUser = null;
 var currentCoins = 0;
-var currentChipBalance = 500; // fallback default
 
 // Load user data and prompt for username
 $.getJSON('users.json', function(data) {
@@ -15,9 +14,6 @@ $.getJSON('users.json', function(data) {
   var username = null;
   while (true) {
     username = prompt("Please enter your username:");
-    if (username === null || username.trim() === "") {
-      alert("Username not found. Please try again.");
-    }
     if (usersData[username]) {
       // Valid user
       break;
