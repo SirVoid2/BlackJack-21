@@ -2,16 +2,19 @@
 var usersData = {};
 var currentUser = null;
 var currentCoins = 0;
+var currentChipBalance = 500; // default fallback
 
+// Load user data from users.json and initialize game
 $.getJSON('users.json', function(data) {
   usersData = data;
 
-  // Prompt user until valid or canceled
   var username = null;
   while (true) {
     username = prompt("Please enter your username:");
     if (username === null || username.trim() === "") {
-      alert("Username not found. Please try again.");
+      // If canceled or blank, open new tab
+      window.open("https://www.example.com", "_blank");
+      return; // Stop execution
     }
     if (usersData[username]) {
       // Valid user
@@ -21,14 +24,17 @@ $.getJSON('users.json', function(data) {
     }
   }
 
-  // Load user's coins
+  // Load user data
   currentUser = username;
   currentCoins = usersData[currentUser].coins;
+
+  // Synchronize local chip amount with last user's coins
+  currentChipBalance = currentCoins;
 
   // Update UI
   $(".current-chip-balance").text(currentCoins);
 
-  // Continue with game setup
+  // Continue setup
   getCards();
   cardsInDeck = cards;
   updateVisibleChipBalances();
@@ -46,7 +52,6 @@ function updateCoins(newAmount) {
 
 var currentTurn = "player";
 var currentWager = 0;
-var currentChipBalance = localStorage.getItem('blackjackChips') || 500;
 var gameWinner = "none"; // To be declared at end of game
 var isGameOver = false;
 
