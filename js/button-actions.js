@@ -134,9 +134,43 @@ function newGame() {
 	}
 }
 
-function resetGame() {
-	currentChipBalance = 0;
-	currentWager = 0;
-	updateVisibleChipBalances();
-	location.reload();
+// Assuming these variables are defined elsewhere in your script
+let currentChipBalance = 0;
+let currentWager = 0;
+
+// Function to update the displayed chip balances.
+// You will need to implement this part based on your HTML structure.
+function updateVisibleChipBalances() {
+  console.log(`Current Chip Balance: ${currentChipBalance}`);
+  console.log(`Current Wager: ${currentWager}`);
+  // Example for updating a specific HTML element:
+  // document.getElementById('chipBalanceDisplay').textContent = currentChipBalance;
 }
+
+function resetGame() {
+  const password = prompt("Please enter the admin password to reset the game:");
+  const correctPassword = "admin123";
+
+  if (password === correctPassword) {
+    // If the password is correct, ask for the amount to update
+    const amountToAdd = prompt("Enter the amount to update the chip balance:");
+
+    // Check if the amount is a valid number
+    const newAmount = Number(amountToAdd);
+    if (!isNaN(newAmount) && newAmount !== null) {
+      currentChipBalance += newAmount; // Update the balance
+      currentWager = 0; // Reset the wager
+      updateVisibleChipBalances(); // Update the visible balance on the page
+      alert(`Chip balance updated. New balance is: ${currentChipBalance}`);
+      location.reload(); // Reload the page to reset the game
+    } else if (amountToAdd !== null) {
+      alert("Invalid amount. Please enter a valid number.");
+    }
+  } else if (password !== null) {
+    alert("Incorrect password. Access denied.");
+  }
+}
+
+// Example usage of the function
+// You would call this function from a button click or other event
+// resetGame();
