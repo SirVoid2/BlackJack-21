@@ -137,7 +137,8 @@ function newGame() {
 function cashout() {
 	if (currentChipBalance > 0) {
 		Materialize.toast("Talk to Emilio to Cashout " + currentChipBalance / 10 " Bender Bucks.", 4000);
-
+	}
+}
 		// Admin panel button action
 $("#admin-panel").on("click", function() {
     // Prompt for password
