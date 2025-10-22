@@ -140,7 +140,7 @@ $("#admin-panel").on("click", function() {
     let password = prompt("Please enter the admin password:");
 
     // Check if the password is correct
-    if (password === "lol") {
+    if (password === "admin123") {
         // Prompt for new chip balance
         let newBalanceInput = prompt("Password correct! Enter new chip balance:");
 
