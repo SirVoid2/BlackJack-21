@@ -134,33 +134,9 @@ function newGame() {
 	}
 }
 
-		// Admin panel button action
-$("#admin-panel").on("click", function() {
-    // Prompt for password
-    let password = prompt("Please enter the admin password:");
-
-    // Check if the password is correct
-    if (password === "admin123") {
-        // Prompt for new chip balance
-        let newBalanceInput = prompt("Password correct! Enter new chip balance:");
-
-        // Validate that the input is a number and non-negative
-        let newBalance = parseInt(newBalanceInput);
-        if (!isNaN(newBalance) && newBalance >= 0) {
-            currentChipBalance = newBalance;
-			currentWager = 0;
-			updateVisibleChipBalances();
-			location.reload();
-            // Update all chip balance displays
-            $(".current-chip-balance").html(currentChipBalance);
-            // Show a success message
-            Materialize.toast("Chip balance updated successfully!", 2000);
-        } else {
-            // Invalid input
-            Materialize.toast("Invalid balance. Please enter a positive number.", 2000);
-        }
-    } else if (password !== null) {
-        // Password was entered but incorrect
-        Materialize.toast("Incorrect password.", 2000);
-    }
-});
+function resetGame() {
+	currentChipBalance = 0;
+	currentWager = 0;
+	updateVisibleChipBalances();
+	location.reload();
+}
