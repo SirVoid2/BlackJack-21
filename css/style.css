@@ -1,6 +1,7 @@
 /* Broad site-wide styles */
 body {
 	background: #1f513b;
+	background-image: url('img/pokertable.jpg');
 	background: linear-gradient(to top right, #1f513b, #0F2725) fixed;
 	text-align: center;
 	font-family: 'Lato', sans-serif;
