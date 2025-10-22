@@ -1,6 +1,6 @@
 /* Broad site-wide styles */
 body {
-	background-image: url('img/pokertable.jpg');
+	background: url('images/pokertable.jpg') no-repeat center center / cover fixed;
 	text-align: center;
 	font-family: 'Lato', sans-serif;
 	color: white;
