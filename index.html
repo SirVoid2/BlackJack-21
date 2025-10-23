@@ -167,34 +167,34 @@
 <script type="text/javascript" src="js/main.js"></script>
 <!-- Initialization Script -->
 <script>
-$(document).ready(function() {
-    // Initialize all modals
-    $('.modal').modal();
+	$(document).ready(function() {
+		// Initialize all modals
+		$('.modal').modal();
 
-    // Remove or comment this line:
-    // $('#questions-modal').modal('open');
+		// Remove or comment this line:
+		// $('#questions-modal').modal('open');
 
-    // When the user clicks the "Play" button
-    $('#start-game-button').click(function() {
-        // Open questions modal instead of starting game
-        $('#questions-modal').modal('open');
-    });
+		// When the user clicks the "Play" button
+		$('#start-game-button').click(function() {
+			// Open questions modal instead of starting game
+			$('#questions-modal').modal('open');
+		});
 
-    // When user submits answers in the questions modal
-    $('#submit-questions').click(function() {
-        // Collect answers if needed
-        const answers = {
-            q1: $('#question1').val(),
-            q2: $('#question2').val(),
-            q3: $('#question3').val(),
-            q4: $('#question4').val(),
-            q5: $('#question5').val()
-        };
-        console.log('Questions answers:', answers);
-        // Now start game after questions are answered
-        startGame();
-    });
-});
+		// When user submits answers in the questions modal
+		$('#submit-questions').click(function() {
+			// Collect answers if needed
+			const answers = {
+				q1: $('#question1').val(),
+				q2: $('#question2').val(),
+				q3: $('#question3').val(),
+				q4: $('#question4').val(),
+				q5: $('#question5').val()
+			};
+			console.log('Questions answers:', answers);
+			// Now start game after questions are answered
+			startGame();
+		});
+	});
 </script>
 </body>
 </html>
