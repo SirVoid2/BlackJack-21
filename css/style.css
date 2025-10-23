@@ -269,12 +269,6 @@ table {
 	margin: 0 auto;
 }
 
-/* Adjust font size for the wager and balance display */
-.current-wager, .current-chip-balance {
-    font-size: 10px; /* or 14px, depending on your preference */
-    font-weight: normal; /* or bold if needed */
-}
-
 /* Resposive mobile adjustments*/
 @media all and (max-width: 600px){
 	.wager-gameplay {
