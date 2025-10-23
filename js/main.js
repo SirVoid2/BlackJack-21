@@ -82,7 +82,13 @@ function updateVisibleHandTotals() {
 
 // Called when player clicks on a chip
 function selectWager(amount){
-    currentWager += amount; // Add the selected amount to the current wager
+    // Check if adding this amount exceeds the current chip balance
+    if (currentWager + amount > currentChipBalance) {
+        // Optional: alert the user or set wager to max possible
+        currentWager = currentChipBalance;
+    } else {
+        currentWager += amount;
+    }
     updateVisibleChipBalances();
 }
 
