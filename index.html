@@ -171,10 +171,16 @@ $(document).ready(function() {
     // Initialize all modals
     $('.modal').modal();
 
-    // Show questions modal immediately on page load
-    $('#questions-modal').modal('open');
+    // Remove or comment this line:
+    // $('#questions-modal').modal('open');
 
-    // When user submits answers
+    // When the user clicks the "Play" button
+    $('#start-game-button').click(function() {
+        // Open questions modal instead of starting game
+        $('#questions-modal').modal('open');
+    });
+
+    // When user submits answers in the questions modal
     $('#submit-questions').click(function() {
         // Collect answers if needed
         const answers = {
@@ -185,7 +191,7 @@ $(document).ready(function() {
             q5: $('#question5').val()
         };
         console.log('Questions answers:', answers);
-        // Start the game
+        // Now start game after questions are answered
         startGame();
     });
 });
