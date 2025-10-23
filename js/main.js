@@ -80,17 +80,38 @@ function updateVisibleHandTotals() {
 
 }
 
-// Called when player clicks on a chip
-function selectWager(amount){
-    // Check if adding this amount exceeds the current chip balance
+// Function to add to wager with max limit check
+function selectWager(amount) {
     if (currentWager + amount > currentChipBalance) {
-        // Optional: alert the user or set wager to max possible
-        currentWager = currentChipBalance;
+        currentWager = currentChipBalance; // Cap at total chips
     } else {
         currentWager += amount;
     }
     updateVisibleChipBalances();
 }
+
+// Function to remove from wager, ensuring it doesn't go below zero
+function removeWager(amount) {
+    if (currentWager - amount < 0) {
+        currentWager = 0;
+    } else {
+        currentWager -= amount;
+    }
+    updateVisibleChipBalances();
+}
+
+// Event listeners for wager increase buttons
+$("#chip-10").click(function() { selectWager(10); });
+$("#chip-25").click(function() { selectWager(25); });
+$("#chip-50").click(function() { selectWager(50); });
+$("#chip-100").click(function() { selectWager(100); });
+$("#chip-1000").click(function() { selectWager(1000); });
+
+// Event listeners for wager decrease buttons
+$(".remove-chip").click(function() {
+    var amount = parseInt($(this).data("amount"));
+    removeWager(amount);
+});
 
 // 	ANIMATIONS/INTERACTIVITY:
 function flipHiddenCard() {
@@ -137,13 +158,6 @@ $(".modal").modal({
       endingTop: "10%", // Ending top style attribute
     }
   );
-
-// EVENT LISTENERS:
-$("#chip-10").click(function(){selectWager(10)});
-$("#chip-25").click(function(){selectWager(25)});
-$("#chip-50").click(function(){selectWager(50)});
-$("#chip-100").click(function(){selectWager(100)});
-$("#chip-1000").click(function(){selectWager(1000)});
 
 // Button activation
 $(startButton).click(startGame);
