@@ -271,7 +271,7 @@ table {
 
 /* Adjust font size for the wager and balance display */
 .current-wager, .current-chip-balance {
-    font-size: 16px; /* or 14px, depending on your preference */
+    font-size: 10px; /* or 14px, depending on your preference */
     font-weight: normal; /* or bold if needed */
 }
 
