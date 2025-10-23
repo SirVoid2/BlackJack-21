@@ -340,67 +340,6 @@ table {
 		margin-left: 20px;
 		position: relative;
 		bottom: 10px;
-	}
-
-	/* Styles for the modal overlay */
-	.modal-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0, 0, 0, 0.7);
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		z-index: 1000;
-	}
-
-	/* Styles for the modal content box */
-	.modal-content {
-		background-color: #fff;
-		padding: 30px;
-		border-radius: 8px;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		max-width: 600px;
-		width: 90%;
-		max-height: 90vh;
-		overflow-y: auto;
-	}
-
-	/* Styles for questions inside the popup */
-	.popup-question {
-		margin-bottom: 20px;
-	}
-
-	.popup-question p {
-		margin-bottom: 10px;
-	}
-
-	.popup-question label {
-		display: block;
-		margin-bottom: 5px;
-		cursor: pointer;
-	}
-
-	.popup-question input[type="radio"] {
-		margin-right: 8px;
-	}
-
-	/* Styles for the submit button inside the popup */
-	.submit-btn {
-		padding: 10px 20px;
-		font-size: 1rem;
-		cursor: pointer;
-		border: none;
-		border-radius: 5px;
-		background-color: #007bff;
-		color: white;
-		margin-top: 20px;
-	}
-
-	.submit-btn:hover {
-		background-color: #0056b3;
-	}
+	}z
 
 }
